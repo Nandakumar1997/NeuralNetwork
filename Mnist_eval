@@ -1,0 +1,64 @@
+import torch
+import torch.nn as nn
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from torch.utils.data import DataLoader
+import torchvision.transforms as transforms
+import torchvision.datasets as datasets
+from PIL import Image, ImageOps
+
+
+#hyper parameters
+n_epochs = 500
+learning_rate = 0.0001
+input_size = 784
+first_hidden_size = 512
+seconnd_hidden_size=256
+output_size = 10
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+class NeuralNet(nn.Module):
+    def __init__(self, input_layer, hidden_size_1,hidden_size_2, output):
+        super().__init__()
+        self.linear_1 = nn.Linear(input_layer, hidden_size_1)
+        self.relu_1 = nn.ReLU()
+        self.linear_2 = nn.Linear(hidden_size_1, hidden_size_2)
+        self.relu_2=nn.ReLU()
+        self.linear_3=nn.Linear(hidden_size_2,output)
+
+    def forward(self, x):
+        out = self.linear_1(x)
+        out = self.relu_1(out)
+        out = self.linear_2(out)
+        out=self.relu_2(out)
+        out=self.linear_3(out)
+        return out
+    
+#loss calculation & optimizer
+model = NeuralNet(input_size, first_hidden_size,seconnd_hidden_size, output_size).to(device)
+model.load_state_dict(torch.load("mnist_model.pth"))
+model.eval()
+
+
+
+
+# Load and preprocess image
+image = Image.open(".\\mnist.png").convert("L")
+#image = ImageOps.invert(image)  # Invert to match MNIST style
+
+transform = transforms.Compose([
+    transforms.Resize((28, 28)),
+    transforms.ToTensor(),
+    transforms.Normalize((0.1307,), (0.3081,))
+])
+
+image = transform(image).view(1, 784).to(next(model.parameters()).device)
+
+# Predict
+with torch.no_grad():
+    output = model(image)
+    predicted_class = output.argmax(dim=1).item()
+
+print(f"Predicted digit: {predicted_class}")

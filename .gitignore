@@ -1,0 +1,6 @@
+# Virtual environment
+
+pytorch_env
+
+#cache
+.mypy_cache
