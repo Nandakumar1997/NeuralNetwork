@@ -36,7 +36,6 @@ class Con_NeuralNet(nn.Module):
         out = self.relu(self.linear_1(out.view(-1,16*6*6)))
         out = self.relu(self.linear_2(out))
         out = self.linear_3(out)
-        
         return out
     
 #loss calculation & optimizer
@@ -47,7 +46,7 @@ model.eval()
 
 
 # Load and preprocess image
-image = Image.open(".\\mnist.png")
+image = Image.open(".\\cifar.png")
 #image = ImageOps.invert(image)  # Invert to match MNIST style
 
 transform = transforms.Compose([
@@ -67,5 +66,4 @@ with torch.no_grad():
     predicted_class = output.argmax(dim=1).item()
     classes=['airplane', 'automobile', 'bird', 'cat', 'deer', 
  'dog', 'frog', 'horse', 'ship', 'truck']
-
 print(f"Predicted digit: {classes[predicted_class]}")

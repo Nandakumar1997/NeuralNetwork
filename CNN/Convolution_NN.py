@@ -17,7 +17,7 @@ train_data = DataLoader(dataset=load_train_data, batch_size=32, shuffle=True)
 test_data = DataLoader(dataset=load_test_data, batch_size=32, shuffle=False)
 
 # Hyperparameters
-n_epochs = 100
+n_epochs = 250
 learning_rate = 0.0001
 
 
@@ -56,9 +56,7 @@ steps = []
 # Training loop
 for epoch in range(n_epochs):
     for step, (images, targets) in enumerate(train_data):
-       
-       
-        #images = images.view(-1, 784).to(device)
+      
         targets = targets.to(device)
 
         # Forward pass
@@ -68,16 +66,13 @@ for epoch in range(n_epochs):
         # Backward and optimize
         optimizer.zero_grad()
         loss.backward()
-        optimizer.step()
-        
-        
+        optimizer.step()    
 
         if (step + 1) % 100 == 0:
             global_step = epoch * len(train_data) + step
             losses.append(loss.item())
             steps.append(global_step)
             print(f"Epoch [{epoch+1}/{n_epochs}], Step [{step+1}/{len(train_data)}], Loss: {loss.item():.4f}")
-            #clear_output(wait=True)
             plt.clf()
             plt.title("Training Loss")
             plt.plot(steps, losses)
