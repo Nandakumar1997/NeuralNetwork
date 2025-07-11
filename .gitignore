@@ -4,3 +4,7 @@ pytorch_env
 
 #cache
 .mypy_cache
+
+#datasets
+CNN/data/
+MNIST_with_NN/data/
